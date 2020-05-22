@@ -5,6 +5,12 @@
  bdeering@uoguelph.ca
 */
 
+#ifndef card_manager_h
+#define card_manager_h
+
+#include <stdio.h>
+#include <stdlib.h>
+
 /* Structures */
 struct card {
   unsigned int value : 4;
@@ -62,3 +68,5 @@ void print_deck();
 void print_community();
 void print_pocket(Pocket pocket);
 void print_card(Card card);
+
+#endif

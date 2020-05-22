@@ -6,8 +6,6 @@
  */
 
 #include "card_manager.h"
-#include <stdio.h>
-#include <stdlib.h>
 
 /* Range Functions */
 Range *max_range() {
