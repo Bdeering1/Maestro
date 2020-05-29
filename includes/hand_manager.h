@@ -1,5 +1,5 @@
 /*
- Maestro: Probability Definitions
+ Maestro: Hand Manager Definitions
  Created by Bryn Deering on 2020-05-21.
  
  bdeering@uoguelph.ca

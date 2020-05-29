@@ -21,18 +21,18 @@ int main (int argc, char *argv[]) {
   print_range(&my_range);
   print_simple_range(&my_range);*/
   
-  Pocket my_pocket = pocket_from_text("7s", "Ad");
+  Pocket my_pocket = pocket_from_text("Td", "As");
   printf("My pocket: ");
   print_pocket(my_pocket);
   
   Board my_com;
-  my_com = flop_from_text("Ah","Ac","Ts");
+  my_com = flop_from_text("Ah","3c","Ts");
   printf("\nFlop: ");
   print_board(my_com);
-  burn_and_turn(card_from_text("7d"), &my_com);
+  burn_and_turn(card_from_text("2d"), &my_com);
   printf("Turn: ");
   print_board(my_com);
-  burn_and_turn(card_from_text("3d"), &my_com);
+  burn_and_turn(card_from_text("6s"), &my_com);
   printf("River: ");
   print_board(my_com);
   printf("\n");

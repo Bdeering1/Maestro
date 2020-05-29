@@ -1,5 +1,5 @@
 /*
- Maestro: Probability
+ Maestro: Hand Manager
  Created by Bryn Deering on 2020-05-21.
  
  bdeering@uoguelph.ca
@@ -62,6 +62,7 @@ Poker_Hand create_poker_hand(Pocket pocket, Board board) {
   
   /*TEMPORARY PRINT*/
   printf("Hand rank: %d\n", hand.rank);
+  printf("Tie breakers: %d %d\n", hand.tie_breakers[0], hand.tie_breakers[1]);
   return hand;
 }
 
@@ -71,9 +72,12 @@ bool is_pair(Card pool[7], short tie_breakers[2]) {
       if (pool[card_1].value == pool[card_2].value) {
         if (card_1 > 1) {
         /* CASE 1 */
-          
+          tie_breakers[0] = high_card(pool[0], pool[1]).value;
+          tie_breakers[1] = low_card(pool[0], pool[1]).value;
         } else {
         /* CASE 2 */
+          tie_breakers[0] = pool[card_1].value;
+          tie_breakers[1] = (card_1 == 0) ? pool[1].value : pool[0].value;
         }
         return true;
       }
@@ -88,7 +92,20 @@ bool is_two_pair(Card pool[7], short tie_breakers[2]) {
         for (int card_3 = card_1 + 1; card_3 < 7; card_3++) {
           for (int card_4 = card_3 + 1; card_4 < 7; card_4++) {
             if (pool[card_3].value == pool[card_4].value) {
-              /*create_two_pair_hand();*/
+              if ((card_1 > 1 && card_3 > 1) || (card_1 <= 1 && card_3 <= 1)) {
+                /* CASE 1 */
+                tie_breakers[0] = high_card(pool[0], pool[1]).value;
+                tie_breakers[1] = low_card(pool[0], pool[1]).value;
+              } else {
+                /* CASE 2 */
+                if (card_1 <= 1) {
+                  tie_breakers[0] = pool[card_1].value;
+                  tie_breakers[1] = (card_1 == 0) ? pool[1].value : pool[0].value;
+                } else {
+                  tie_breakers[0] = pool[card_3].value;
+                  tie_breakers[1] = (card_3 == 0) ? pool[1].value : pool[0].value;
+                }
+              }
               return true;
             }
           }
@@ -103,8 +120,18 @@ bool is_triple(Card pool[7], short tie_breakers[2]) {
     for (int card_2 = card_1 + 1; card_2 < 7; card_2++) {
       if (pool[card_1].value == pool[card_2].value) {
         for (int card_3 = card_2 + 1; card_3 < 7; card_3++) {
-          if (pool[card_2].value == pool[card_3].value)
+          if (pool[card_2].value == pool[card_3].value) {
+            if (card_1 > 1) {
+              /* CASE 1 */
+              tie_breakers[0] = high_card(pool[0], pool[1]).value;
+              tie_breakers[1] = low_card(pool[0], pool[1]).value;
+            } else {
+              /* CASE 2 */
+              tie_breakers[0] = pool[card_1].value;
+              tie_breakers[1] = (card_1 == 0) ? pool[1].value : pool[0].value;
+            }
             return true;
+          }
         }
       }
     }
@@ -120,7 +147,7 @@ bool is_flush(Card pool[7], short tie_breakers[2]) {
     suits[pool[card].suit]++;
   for (int suit = 0; suit < 4; suit++) {
     if (suits[suit] == 5) {
-      /*create_flush_hand*/
+      /*create_flush_hand for straight flush check*/
       return true;
     }
   }
@@ -160,7 +187,6 @@ bool is_quads(Card pool[7], short tie_breakers[2]) {
           if (pool[card_2].value == pool[card_3].value) {
             for (int card_4 = card_3 + 1; card_4 < 7; card_4++) {
               if (pool[card_3].value == pool[card_4].value) {
-                /*create_quads_hand()*/
                 return true;
               }
             }
