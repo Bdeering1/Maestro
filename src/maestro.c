@@ -21,24 +21,18 @@ int main (int argc, char *argv[]) {
   print_range(&my_range);
   print_simple_range(&my_range);*/
   
-  Pocket my_pocket = pocket_from_text("Td", "As");
+  Pocket my_pocket = pocket_from_text("3s", "4d");
   printf("My pocket: ");
   print_pocket(my_pocket);
   
-  Board my_com;
-  my_com = flop_from_text("Ah","3c","Ts");
-  printf("\nFlop: ");
-  print_board(my_com);
-  burn_and_turn(card_from_text("2d"), &my_com);
-  printf("Turn: ");
-  print_board(my_com);
-  burn_and_turn(card_from_text("6s"), &my_com);
-  printf("River: ");
-  print_board(my_com);
+  Board my_board;
+  my_board = flop_from_text("As","Tc","Ts");
+  burn_and_turn(card_from_text("2s"), &my_board);
+  burn_and_turn(card_from_text("6s"), &my_board);
   printf("\n");
   
   Poker_Hand my_hand;
-  my_hand = create_poker_hand(my_pocket, my_com);
+  my_hand = create_poker_hand(my_pocket, my_board);
   
   return 0;
 }
