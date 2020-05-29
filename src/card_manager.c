@@ -25,20 +25,20 @@ Range *max_range() {
 }
 
 /* Utility Functions */
-Community new_flop(Card first_card, Card second_card, Card third_card) {
-  Community community;
-  community.state = 0;
-  community.cards[0] = first_card;
-  community.cards[1] = second_card;
-  community.cards[2] = third_card;
-  return community;
+Board new_flop(Card first_card, Card second_card, Card third_card) {
+  Board board;
+  board.state = 0;
+  board.cards[0] = first_card;
+  board.cards[1] = second_card;
+  board.cards[2] = third_card;
+  return board;
 }
 
-void burn_and_turn(Card card, Community *community) {
-  if (community->state == 2)
+void burn_and_turn(Card card, Board *board) {
+  if (board->state == 2)
     return;
-  community->cards[3 + community->state] = card;
-  community->state++;
+  board->cards[3 + board->state] = card;
+  board->state++;
 }
 
 void create_deck() {
@@ -72,7 +72,7 @@ Card low_card(Card card_a, Card card_b) {
 
 /*Range range_from_text (finish)*/
 
-Community flop_from_text(char *first_card, char *second_card, char *third_card) {
+Board flop_from_text(char *first_card, char *second_card, char *third_card) {
   return new_flop(card_from_text(first_card), card_from_text(second_card), card_from_text(third_card));
 }
 
@@ -149,15 +149,15 @@ void print_simple_range(Range *range) {
   }
 }
 
-void print_community(Community community) {
-  print_card(community.cards[0]);
-  print_card(community.cards[1]);
-  print_card(community.cards[2]);
-  if (community.state == 1) {
-    print_card(community.cards[3]);
-  } else if (community.state == 2) {
-    print_card(community.cards[3]);
-    print_card(community.cards[4]);
+void print_board(Board board) {
+  print_card(board.cards[0]);
+  print_card(board.cards[1]);
+  print_card(board.cards[2]);
+  if (board.state == 1) {
+    print_card(board.cards[3]);
+  } else if (board.state == 2) {
+    print_card(board.cards[3]);
+    print_card(board.cards[4]);
   }
   printf("\n");
 }

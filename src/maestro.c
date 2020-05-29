@@ -6,7 +6,7 @@
 */
 
 #include "card_manager.h"
-#include "probability.h"
+#include "hand_manager.h"
 
 int main (int argc, char *argv[]) {
   create_deck();
@@ -25,16 +25,16 @@ int main (int argc, char *argv[]) {
   printf("My pocket: ");
   print_pocket(my_pocket);
   
-  Community my_com;
+  Board my_com;
   my_com = flop_from_text("Ah","Ac","Ts");
   printf("\nFlop: ");
-  print_community(my_com);
+  print_board(my_com);
   burn_and_turn(card_from_text("7d"), &my_com);
   printf("Turn: ");
-  print_community(my_com);
+  print_board(my_com);
   burn_and_turn(card_from_text("3d"), &my_com);
   printf("River: ");
-  print_community(my_com);
+  print_board(my_com);
   printf("\n");
   
   Poker_Hand my_hand;

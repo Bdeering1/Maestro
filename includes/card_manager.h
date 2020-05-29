@@ -23,11 +23,11 @@ struct pocket {
 };
 typedef struct pocket Pocket;
 
-struct community {
+struct board {
   Card cards[5];
   short state;
 };
-typedef struct community Community;
+typedef struct board Board;
 
 struct deck {
   Card cards[52];
@@ -48,24 +48,24 @@ Deck deck;
 Range *max_range();
 
 /* Utility Functions */
-Community new_flop(Card first_card, Card second_card, Card third_card);
-void burn_and_turn(Card card, Community *community);
+Board new_flop(Card first_card, Card second_card, Card third_card);
+void burn_and_turn(Card card, Board *board);
 void create_deck();
 Pocket new_pocket(Card first_card, Card second_card);
 Card high_card(Card card_a, Card card_b);
 Card low_card(Card card_a, Card card_b);
 
 /* Interfacing Functions */
-Community flop_from_text(char *first_card, char *second_card, char *third_card);
+Board flop_from_text(char *first_card, char *second_card, char *third_card);
 Pocket pocket_from_text(char *card_string_1, char *card_string_2);
 Card card_from_text(char *card_string);
 
 /* Print Functions */
 void print_range(Range *range);
 void print_simple_range(Range *range);
-void print_community(Community community);
+void print_board(Board board);
 void print_deck();
-void print_community();
+void print_board();
 void print_pocket(Pocket pocket);
 void print_card(Card card);
 
