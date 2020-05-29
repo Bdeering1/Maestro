@@ -140,6 +140,44 @@ bool is_triple(Card pool[7], short tie_breakers[2]) {
   return false;
 }
 bool is_straight(Card pool[7], Card straight[5], short tie_breakers[2]) {
+  /* sort elements */
+  Card sort_array[7];
+  for (int i = 0; i < 7; i++) {
+    sort_array[i] = pool[i];
+  }
+  Card temp;
+  
+  for (int card_1 = 0; card_1 < 7; card_1++) {
+    for (int card_2 = card_1 + 1; card_2 < 7; card_2++) {
+      if (sort_array[card_1].value > sort_array[card_2].value) {
+        temp = sort_array[card_1];
+        sort_array[card_1] = sort_array[card_2];
+        sort_array[card_2] = temp;
+      }
+    }
+  }
+  
+  /* scan elements */
+  int straight_count = 1, straight_start = -1;
+  for (int card = 0; card < 7; card++) {
+    if (sort_array[card].value + 1 == sort_array[card + 1].value) {
+      straight_count++;
+      if (straight_count == 4 && sort_array[6].value == 14 && card == 2) { /* ace lowest card in straight */
+        tie_breakers[0] = 1;
+      } else if (straight_count == 5) {
+        straight_start = card - 3;
+      }
+    } else if (card > 2) {
+      break;
+    }
+  }
+  
+  if (straight_start != -1) {
+    tie_breakers[0] = sort_array[straight_start].value;
+    memcpy(straight, sort_array + straight_start, 5 * sizeof(Card));
+    return true;
+  }
+
   return false;
 }
 bool is_flush(Card pool[7], short tie_breakers[2]) {
@@ -148,7 +186,7 @@ bool is_flush(Card pool[7], short tie_breakers[2]) {
     suits[pool[card].suit]++;
   }
   for (int suit = 0; suit < 4; suit++) {
-    if (suits[suit] == 5) {
+    if (suits[suit] >= 5) {
       if (pool[0].suit == suit && pool[1].suit == suit) {
         /* CASE 1 */
         tie_breakers[0] = high_card(pool[0], pool[1]).value;
@@ -216,13 +254,9 @@ bool is_straight_flush(Card straight[5], short tie_breakers[2]) {
   }
   for (int suit = 0; suit < 4; suit++) {
     if (suits[suit] == 5) {
-      /* tie_breakers[0] = (lowest card) */
+      tie_breakers[0] = straight[0].value;
       return true;
     }
   }
   return false;
-}
-
-Card highest_from_pool(Card *pool) {
-  return pool[0];
 }
