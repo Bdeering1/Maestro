@@ -7,21 +7,15 @@
 
 #include "card_manager.h"
 #include "hand_manager.h"
+#include "probability.h"
 
 int main (int argc, char *argv[]) {
   create_deck();
-  
-  /*Range my_range;
-  my_range.size = 2;
-  my_range.hands = malloc(my_range.size * sizeof(Pocket));
-  my_range.hands[0] = pocket_from_text("Ah", "Kh");
-  my_range.hands[1] = pocket_from_text("Td", "9d");
 
-  printf("My range: \n");
-  print_range(&my_range);
-  print_simple_range(&my_range);*/
+  /*draw_card(card_from_text("Ah"));
+  print_deck();*/
   
-  Pocket my_pocket = pocket_from_text("Ts", "Js");
+  /*Pocket my_pocket = pocket_from_text("Ts", "Js");
   printf("My pocket: ");
   print_pocket(my_pocket);
   
@@ -32,7 +26,9 @@ int main (int argc, char *argv[]) {
   printf("\n");
   
   Poker_Hand my_hand;
-  my_hand = create_poker_hand(my_pocket, my_board);
+  my_hand = create_poker_hand(my_pocket, my_board);*/
+  
+  printf("\n%d\n", choose(52,5));
   
   return 0;
 }

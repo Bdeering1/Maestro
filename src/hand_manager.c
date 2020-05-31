@@ -7,7 +7,9 @@
 
 #include "hand_manager.h"
 
+
 /* Hand Finding Functions */
+
 Poker_Hand create_poker_hand(Pocket pocket, Board board) {
   Poker_Hand hand;
   hand.tie_breakers[0] = 0;
