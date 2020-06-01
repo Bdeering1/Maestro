@@ -38,16 +38,27 @@ void sort_deck() {
 }
 
 Card draw_card(Card card) {
+  Card temp;
   for (int i = 0; i < deck.length; i++) {
     if (deck.cards[i].value == card.value && deck.cards[i].suit == card.suit) {
+      temp = deck.cards[i];
       deck.cards[i] = deck.cards[deck.length - 1];
+      deck.cards[deck.length - 1] = temp;
       break;
     }
   }
   if (i == deck.length)
-    printf("!!Card not found error!!\n");
+    printf("\nError: Trying to draw a duplicate card!\n");
   deck.length--;
   return card;
+}
+
+void replace_card() {
+  if (deck.length != 52) {
+    deck.length++;
+  } else {
+    printf("\nError: Trying to add card to full deck!");
+  }
 }
 
 Card high_card(Card card_a, Card card_b) {
@@ -59,14 +70,19 @@ Card low_card(Card card_a, Card card_b) {
 
 Pocket new_pocket(Card first_card, Card second_card) {
   Pocket pocket;
-  pocket.cards[0] = draw_card(first_card);
-  pocket.cards[1] = draw_card(second_card);
+  pocket.cards[0] = first_card;
+  pocket.cards[1] = second_card;
   return pocket;
+}
+
+void draw_pocket(Pocket pocket) {
+  draw_card(pocket.cards[0]);
+  draw_card(pocket.cards[1]);
 }
 
 Board new_flop(Card first_card, Card second_card, Card third_card) {
   Board board;
-  board.state = 0;
+  board.state = 3;
   board.cards[0] = draw_card(first_card);
   board.cards[1] = draw_card(second_card);
   board.cards[2] = draw_card(third_card);
@@ -74,10 +90,18 @@ Board new_flop(Card first_card, Card second_card, Card third_card) {
 }
 
 void burn_and_turn(Card card, Board *board) {
-  if (board->state == 2)
+  if (board->state == 5)
     return;
-  board->cards[3 + board->state] = draw_card(card);
+  board->cards[board->state] = draw_card(card);
   board->state++;
+}
+
+void peek_next(Card card, Board *board) {
+  if (board->state == 4) {
+    board->cards[4] = card;
+  } else {
+    board->cards[3] = card;
+  }
 }
 
 
@@ -188,9 +212,9 @@ void print_board(Board board) {
   print_card(board.cards[0]);
   print_card(board.cards[1]);
   print_card(board.cards[2]);
-  if (board.state == 1) {
+  if (board.state == 4) {
     print_card(board.cards[3]);
-  } else if (board.state == 2) {
+  } else if (board.state == 5) {
     print_card(board.cards[3]);
     print_card(board.cards[4]);
   }

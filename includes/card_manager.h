@@ -42,11 +42,14 @@ Deck deck;
 void create_deck();
 void sort_deck();
 Card draw_card(Card card);
+void replace_card();
 Card high_card(Card card_a, Card card_b);
 Card low_card(Card card_a, Card card_b);
+Pocket new_pocket(Card first_card, Card second_card);
+void draw_pocket(Pocket pocket);
 Board new_flop(Card first_card, Card second_card, Card third_card);
 void burn_and_turn(Card card, Board *board);
-Pocket new_pocket(Card first_card, Card second_card);
+void peek_next(Card card, Board *board);
 
 /* Interfacing Functions */
 Card card_from_text(char *card_string);

@@ -29,19 +29,19 @@
 /* Structures */
 struct poker_hand {
   unsigned int rank : 4;
-  short tie_breakers[2];
+  short tie_breakers[3];
 };
 typedef struct poker_hand Poker_Hand;
 
 /* Hand Finding Functions */
-Poker_Hand create_poker_hand(Pocket pocket, Board board);
-bool is_pair(Card pool[7], short tie_breakers[2]);
-bool is_two_pair(Card pool[7], short tie_breakers[2]);
-bool is_triple(Card pool[7], short tie_breakers[2]);
-bool is_straight(Card pool[7], Card straight[5], short tie_breakers[2]);
-bool is_flush(Card pool[7], short tie_breakers[2]);
-bool is_full_house(Card pool[7], short tie_breakers[2]);
-bool is_quads(Card pool[7]);
-bool is_straight_flush(Card straight[5], short tie_breakers[2]);
+Poker_Hand create_poker_hand(Pocket pocket, Board board, short state);
+bool is_pair(Card *pool, short pool_size, short tie_breakers[3]);
+bool is_two_pair(Card *pool, short pool_size, short tie_breakers[3]);
+bool is_triple(Card *pool, short pool_size, short tie_breakers[3]);
+bool is_straight(Card *pool, short pool_size, Card straight[5], short tie_breakers[3]);
+bool is_flush(Card *pool, short pool_size, short tie_breakers[3]);
+bool is_full_house(Card *pool, short pool_size, short tie_breakers[3]);
+bool is_quads(Card *pool, short pool_size, short tie_breakers[3]);
+bool is_straight_flush(Card straight[5], short tie_breakers[3]);
 
 #endif

@@ -6,21 +6,78 @@
  */
 
 #include "probability.h"
+#include "hand_manager.h"
+#include "card_manager.h"
+
+
+/* Outs */
+
+float get_outs(Pocket pocket, Board board) {
+  Poker_Hand current_hand;
+  float outs = 0;
+  sort_deck(); /* TEMPORARY (to print outs nicely) */
+  current_hand = create_poker_hand(pocket, board, board.state);
+  if (board.state == 3) { /* after flop */
+    for (int card = 0; card < deck.length; card++) {
+      peek_next(deck.cards[card], &board);
+      Poker_Hand hand = create_poker_hand(pocket, board, 4);
+      if ((hand.rank > current_hand.rank || (hand.rank == current_hand.rank && hand.tie_breakers[0] > current_hand.tie_breakers[0])) && hand.tie_breakers[2] == 0) {
+        print_card(deck.cards[card]);
+        outs++;
+      }
+    }
+    /*for (int card_1 = 0; card_1 < deck.length; card_1++) {
+      burn_and_turn(deck.cards[card_1], &board);
+      for (int card_2 = card_1 + 1; card_2 < deck.length; card_2++) {
+        if (is_river_out(pocket, board, current_hand, card_2)) {
+          outs++;
+        }
+      }
+      board.state = 3;
+      replace_card();
+    }
+    outs  = outs / 46;*/
+  } else { /* after turn */
+    for (int card = 0; card < deck.length; card++) {
+      if (is_river_out(pocket, board, current_hand, card)) {
+        print_card(deck.cards[card]);
+        outs++;
+      }
+    }
+  }
+  return outs;
+}
+
+bool is_river_out(Pocket pocket, Board board, Poker_Hand current_hand, short card) {
+  peek_next(deck.cards[card], &board);
+  Poker_Hand hand = create_poker_hand(pocket, board, 5);
+  if ((hand.rank > current_hand.rank || (hand.rank == current_hand.rank && hand.tie_breakers[0] > current_hand.tie_breakers[0])) && hand.tie_breakers[2] == 0) {
+    return true;
+  }
+  return false;
+}
 
 
 /* Utility Functions */
 
 int choose(short a, short b) {
   int c = a;
-  printf("c = %d\n", c);
   for (int i = 1; i < b; i++) {
     a--;
     c *= a;
-    printf("c = %d\n", c);
   }
-  printf("a = %d, b = %d, c = %d\nfact(b) = %d", a, b, c, factorial(b));
   
   return c / factorial(b);
+}
+
+int permutations(short a, short b) {
+  int c = a;
+  for (int i = 1; i < b; i++) {
+    a--;
+    c *= a;
+  }
+  
+  return c;
 }
 
 int factorial(int n)
@@ -35,7 +92,7 @@ int factorial(int n)
 
 Range *max_range() {
   Range *range = malloc(sizeof(Range));
-  range->size = choose(deck.length,2);
+  range->size = choose(deck.length, 2);
   range->hands = malloc(range->size * sizeof(Pocket));
   
   sort_deck();
@@ -43,7 +100,7 @@ Range *max_range() {
   int hand = 0;
   for (int card_1 = 0; card_1 < deck.length; card_1++) {
     for (int card_2 = card_1 + 1; card_2 < deck.length; card_2++) {
-      range->hands[hand] = new_pocket(deck.cards[card_1], deck.cards[card_2]); /*WILL DRAW FROM DECK!!!*/
+      range->hands[hand] = new_pocket(deck.cards[card_1], deck.cards[card_2]);
       hand++;
     }
   }
@@ -55,6 +112,7 @@ void print_range(Range *range) {
     printf("%d. ", hand + 1);
     print_pocket(range->hands[hand]);
   }
+  printf("Range size: %d\n", range->size);
 }
 
 

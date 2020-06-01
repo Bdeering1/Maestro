@@ -6,7 +6,9 @@
  */
 
 #include "card_manager.h"
+#include "hand_manager.h"
 #include <stdlib.h>
+#include <stdbool.h>
 
 struct range {
   Pocket *hands;
@@ -14,8 +16,13 @@ struct range {
 };
 typedef struct range Range;
 
+/* River Functions */
+float get_outs(Pocket pocket, Board board);
+bool is_river_out(Pocket pocket, Board board, Poker_Hand current_hand, short card);
+
 /* Utility Functions */
 int choose(short a, short b);
+int permutations(short a, short b);
 int factorial(int n);
 
 /* Range Functions */
