@@ -8,9 +8,43 @@
 #include "hand_manager.h"
 
 
-/* Hand Finding Functions */
+/* Outs Functions */
 
-Poker_Hand create_poker_hand(Pocket pocket, Board board, short state) {
+Poker_Hand create_poker_hand(Pocket pocket, Board board) {
+  Poker_Hand hand, possible_hand;
+  hand = hand_with_value(pocket, board, board.state);
+  hand.num_outs = 0;
+  
+  sort_deck();
+  for (int card = 0; card < deck.length; card++) {
+    peek_next(deck.cards[card], &board);
+    if (board.state == 3) {
+      possible_hand = hand_with_value(pocket, board, 4);
+    } else if (board.state == 4) {
+      possible_hand = hand_with_value(pocket, board, 5);
+    } else {
+      printf("Board is full!");
+      hand.num_outs = -1;
+      return hand;
+    }
+    if (is_out(pocket, board, hand, possible_hand)) {
+      hand.outs[hand.num_outs] = deck.cards[card];
+      hand.num_outs++;
+    }
+  }
+  return hand;
+}
+
+bool is_out(Pocket pocket, Board board, Poker_Hand hand, Poker_Hand possible_hand) {
+  if ((possible_hand.rank > hand.rank || (possible_hand.rank == hand.rank && possible_hand.tie_breakers[0] > hand.tie_breakers[0])) && possible_hand.tie_breakers[2] == 0)
+    return true;
+  return false;
+}
+
+
+/* Hand Value Functions */
+
+Poker_Hand hand_with_value(Pocket pocket, Board board, short state) {
   Poker_Hand hand;
   hand.tie_breakers[0] = 0;
   hand.tie_breakers[1] = 0;
@@ -283,4 +317,22 @@ bool is_straight_flush(Card straight[5], short tie_breakers[3]) {
   }
   tie_breakers[0] = straight[0].value;
   return true;
+}
+
+
+/* Print Functions */
+
+void print_outs(Poker_Hand hand) {
+  printf("Outs: ");
+  if (hand.num_outs == -1) {
+    printf("none (full board)\n");
+  } else if (hand.num_outs == 0) {
+    printf("none\n");
+  } else {
+    for (int i = 0; i < hand.num_outs; i++) {
+      print_card(hand.outs[i]);
+    }
+  }
+  if (hand.num_outs > 0)
+    printf("\n%d outs\n", hand.num_outs);
 }

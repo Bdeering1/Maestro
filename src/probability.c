@@ -10,54 +10,6 @@
 #include "card_manager.h"
 
 
-/* Outs */
-
-float get_outs(Pocket pocket, Board board) {
-  Poker_Hand current_hand;
-  float outs = 0;
-  sort_deck(); /* TEMPORARY (to print outs nicely) */
-  current_hand = create_poker_hand(pocket, board, board.state);
-  if (board.state == 3) { /* after flop */
-    for (int card = 0; card < deck.length; card++) {
-      peek_next(deck.cards[card], &board);
-      Poker_Hand hand = create_poker_hand(pocket, board, 4);
-      if ((hand.rank > current_hand.rank || (hand.rank == current_hand.rank && hand.tie_breakers[0] > current_hand.tie_breakers[0])) && hand.tie_breakers[2] == 0) {
-        print_card(deck.cards[card]);
-        outs++;
-      }
-    }
-    /*for (int card_1 = 0; card_1 < deck.length; card_1++) {
-      burn_and_turn(deck.cards[card_1], &board);
-      for (int card_2 = card_1 + 1; card_2 < deck.length; card_2++) {
-        if (is_river_out(pocket, board, current_hand, card_2)) {
-          outs++;
-        }
-      }
-      board.state = 3;
-      replace_card();
-    }
-    outs  = outs / 46;*/
-  } else { /* after turn */
-    for (int card = 0; card < deck.length; card++) {
-      if (is_river_out(pocket, board, current_hand, card)) {
-        print_card(deck.cards[card]);
-        outs++;
-      }
-    }
-  }
-  return outs;
-}
-
-bool is_river_out(Pocket pocket, Board board, Poker_Hand current_hand, short card) {
-  peek_next(deck.cards[card], &board);
-  Poker_Hand hand = create_poker_hand(pocket, board, 5);
-  if ((hand.rank > current_hand.rank || (hand.rank == current_hand.rank && hand.tie_breakers[0] > current_hand.tie_breakers[0])) && hand.tie_breakers[2] == 0) {
-    return true;
-  }
-  return false;
-}
-
-
 /* Utility Functions */
 
 int choose(short a, short b) {
@@ -107,6 +59,9 @@ Range *max_range() {
   return range;
 }
 
+
+/* Print Functions */
+
 void print_range(Range *range) {
   for (int hand = 0; hand < range->size; hand++) {
     printf("%d. ", hand + 1);
@@ -114,9 +69,6 @@ void print_range(Range *range) {
   }
   printf("Range size: %d\n", range->size);
 }
-
-
-/* Print Functions */
 
 void print_simple_range(Range *range) {
   Card big_card, small_card;

@@ -12,8 +12,8 @@
 
 /* Structures */
 struct card {
-  unsigned int value : 4;
-  unsigned int suit : 2;
+  unsigned short value : 4;
+  unsigned short suit : 2;
 };
 typedef struct card Card;
 
@@ -34,7 +34,7 @@ struct deck {
 };
 typedef struct deck Deck;
 
-/* Global Structures */
+/* Globals */
 Deck deck;
 
 
