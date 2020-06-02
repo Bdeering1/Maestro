@@ -9,6 +9,7 @@
 #define card_manager_h
 
 #include <stdio.h>
+#include <stdbool.h>
 
 /* Structures */
 struct card {
@@ -45,6 +46,7 @@ Card draw_card(Card card);
 void replace_card();
 Card high_card(Card card_a, Card card_b);
 Card low_card(Card card_a, Card card_b);
+bool cards_are_equal(Card card_1, Card card_2);
 Pocket new_pocket(Card first_card, Card second_card);
 void draw_pocket(Pocket pocket);
 Board new_flop(Card first_card, Card second_card, Card third_card);

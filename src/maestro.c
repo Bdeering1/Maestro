@@ -16,15 +16,21 @@ int main (int argc, char *argv[]) {
   draw_pocket(my_pocket);
   printf("\nMy pocket: ");
   print_pocket(my_pocket);
+  printf("\n");
   
-  Board my_board;
+  /*Board my_board;
   my_board = flop_from_text("5s","6s","8h");
   printf("Board: ");
   print_board(my_board);
   
   Poker_Hand my_hand = create_poker_hand(my_pocket, my_board);
   print_outs(my_hand);
-  printf("\n");
+  printf("\n");*/
+  
+  Range *my_range = create_max_range();
+  print_simple_range(my_range);
+  
+  print_pocket_ranks();
   
   return 0;
 }

@@ -40,7 +40,7 @@ void sort_deck() {
 Card draw_card(Card card) {
   Card temp;
   for (int i = 0; i < deck.length; i++) {
-    if (deck.cards[i].value == card.value && deck.cards[i].suit == card.suit) {
+    if (cards_are_equal(deck.cards[i], card)) {
       temp = deck.cards[i];
       deck.cards[i] = deck.cards[deck.length - 1];
       deck.cards[deck.length - 1] = temp;
@@ -66,6 +66,12 @@ Card high_card(Card card_a, Card card_b) {
 }
 Card low_card(Card card_a, Card card_b) {
   return (card_a.value >= card_b.value) ? card_b : card_a;
+}
+
+bool cards_are_equal(Card card_1, Card card_2) {
+  if (card_1.value == card_2.value && card_1.suit == card_2.suit)
+    return true;
+  return false;
 }
 
 Pocket new_pocket(Card first_card, Card second_card) {
@@ -205,7 +211,6 @@ void print_card(Card card) {
 void print_pocket(Pocket pocket) {
   print_card(pocket.cards[0]);
   print_card(pocket.cards[1]);
-  printf("\n");
 }
 
 void print_board(Board board) {

@@ -5,8 +5,8 @@
  bdeering@uoguelph.ca
  */
 
-#ifndef probability_h
-#define probability_h
+#ifndef hand_manager_h
+#define hand_manager_h
 
 #include "card_manager.h"
 #include <stdio.h>
