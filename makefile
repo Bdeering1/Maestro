@@ -25,4 +25,4 @@ $(BINDIR)probability.o: $(SRCDIR)probability.c
 	$(CC) $(CFLAGS) -c $(SRCDIR)probability.c -o $@
 
 clean:
-	rm ./bin/*.o ./bin/maestro
+	rm ./bin/*

@@ -115,7 +115,7 @@ void peek_next(Card card, Board *board) {
 
 Card card_from_text(char *card_string) {
   Card card;
-  switch (card_string[0]) {
+  switch (toupper(card_string[0])) {
     case 'A':
       card.value = 14;
       break;
@@ -134,7 +134,7 @@ Card card_from_text(char *card_string) {
     default:
       card.value = (int)card_string[0];
   }
-  switch (card_string[1]) {
+  switch (tolower(card_string[1])) {
     case 's':
       card.suit = 0;
       break;

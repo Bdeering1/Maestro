@@ -6,34 +6,82 @@
 */
 
 #include "card_manager.h"
-/*#include "hand_manager.h"*/
 #include "probability.h"
+#include <ctype.h>
+
+void help() {
+  printf("\nHow to use:\n\n");
+  printf("Enter the letter for the function you want to use, then any additional input if required.\n\n");
+  printf("O = Calculate outs           ->  o [my card 1] [my card 2] [flop 1] [flop 2] [flop 3]\n");
+  printf("E = Evalutate hand strength  ->  e [card 1] [card 2] [num players] <- optional, def=9\n");
+  printf("R = Opening range            ->  r [min hand strength]\n");
+  printf("A = Winning percentage of ALL starting hands (9 players)\n");
+  printf("H = Get help menu (this)\n");
+  printf("Q = Quit\n\n");
+  printf("*nothing is case sensitive, each card should be two letters (ten = 'T')\n");
+  printf(" eg. Ah, Kd, Ts, 5c\n\n\n");
+}
 
 int main (int argc, char *argv[]) {
   create_deck();
   
-  Pocket my_pocket = pocket_from_text(argv[1], argv[2]);
-  draw_pocket(my_pocket);
-  printf("\nMy pocket: ");
-  print_pocket(my_pocket);
-  printf("\n\n");
+  help();
   
-  /*Board my_board;
-  my_board = flop_from_text("5s","6s","8h");
+  char user_input[50];
+  char *token;
+  while (true) {
+    printf("->");
+    fgets(user_input, 50, stdin);
+    token = strtok(user_input, " ");
+    token[0] = tolower(token[0]);
+    
+    if (token[0] == 'o') { /* not finding straight draw with A in outs??? */
+      Pocket my_pocket = pocket_from_text(strtok(NULL, " "), strtok(NULL, " "));
+      draw_pocket(my_pocket);
+      Board my_board = flop_from_text(strtok(NULL, " "), strtok(NULL, " "), strtok(NULL, " "));
+      Poker_Hand my_hand = create_poker_hand(my_pocket, my_board);
+      printf("\n");
+      print_outs(my_hand);
+      printf("\n\n");
+    } else if (token[0] == 'e') {
+      Pocket my_pocket = pocket_from_text(strtok(NULL, " "), strtok(NULL, " "));
+      draw_pocket(my_pocket);
+      token = strtok(NULL, " ");
+      if (token == NULL) {
+        printf("\nHand strength: %.2f\n\n\n", relative_strength(my_pocket, 9));
+      } else {
+        printf("\nHand strength: %.2f\n\n\n", relative_strength(my_pocket, atoi(token)));
+      }
+      replace_card();
+      replace_card();
+    } else if (token[0] == 'r') {
+      Range *my_range = create_range();
+      printf("\n");
+      relative_range(my_range, atoi(strtok(NULL, user_input)));
+      print_simple_range(my_range);
+      printf("\n\n");
+    } else if (token[0] == 'a') {
+      print_pocket_ranks();
+    } else if (token[0] == 'h') {
+      help();
+    } else if (token[0] == 'q'){
+      break;
+    } else {
+      printf("\nYour entry was not a valid command\n\n");
+    }
+  }
+  
+  /*printf("\nMy pocket: ");
+  print_pocket(my_pocket);
+  printf("\n\n");*/
+  
+  /*Board my_board = flop_from_text("5s","6s","8h");
   printf("Board: ");
   print_board(my_board);
   
   Poker_Hand my_hand = create_poker_hand(my_pocket, my_board);
   print_outs(my_hand);
   printf("\n");*/
-  
-  Range *my_range = create_range();
-  relative_range(my_range, 2);
-  print_simple_range(my_range);
-  
-  /*print_pocket_ranks();*/
-  
-  printf("\nWin percent: %.2f\n", relative_strength(my_pocket, 6));
   
   return 0;
 }

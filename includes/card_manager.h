@@ -9,6 +9,7 @@
 #define card_manager_h
 
 #include <stdio.h>
+#include <ctype.h>
 #include <stdbool.h>
 
 /* Structures */

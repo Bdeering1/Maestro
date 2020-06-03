@@ -124,10 +124,8 @@ float absolute_strength(Pocket pocket) {
 
 float relative_strength(Pocket pocket, short players) {
   short pos = range_chart_pos(pocket);
-  return (POCKET_RANKS[pos/13][pos%13] * 9) / players - (100 / (float)players);
+  return ((POCKET_RANKS[pos/13][pos%13] * 9) - (100)) / players;
 }
-
-/* sort range function */
 
 
 /* Print Functions */
