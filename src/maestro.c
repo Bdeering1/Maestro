@@ -12,11 +12,11 @@
 int main (int argc, char *argv[]) {
   create_deck();
   
-  Pocket my_pocket = pocket_from_text("3s", "4s");
+  Pocket my_pocket = pocket_from_text(argv[1], argv[2]);
   draw_pocket(my_pocket);
   printf("\nMy pocket: ");
   print_pocket(my_pocket);
-  printf("\n");
+  printf("\n\n");
   
   /*Board my_board;
   my_board = flop_from_text("5s","6s","8h");
@@ -27,10 +27,13 @@ int main (int argc, char *argv[]) {
   print_outs(my_hand);
   printf("\n");*/
   
-  Range *my_range = create_max_range();
+  Range *my_range = create_range();
+  relative_range(my_range, 2);
   print_simple_range(my_range);
   
-  print_pocket_ranks();
+  /*print_pocket_ranks();*/
+  
+  printf("\nWin percent: %.2f\n", relative_strength(my_pocket, 6));
   
   return 0;
 }

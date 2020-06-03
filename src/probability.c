@@ -48,7 +48,7 @@ int factorial(int n)
 
 /* Range Functions */
 
-Range *create_max_range(Pocket my_pocket) {
+Range *create_range() {
   Range *range = malloc(sizeof(Range));
   range->size = choose(deck.length, 2);
   range->pockets = malloc(range->size * sizeof(Pocket));
@@ -56,18 +56,41 @@ Range *create_max_range(Pocket my_pocket) {
   for (int i = 0; i < 13; i++)
     range->simple_range[i] = 0;
   
-  sort_deck();
-  /* sort range at the end instead */
-  
+  return range;
+}
+
+void absolute_range(Range *range, float min_strength) {
+  Pocket this_pocket;
   int pocket_num = 0;
+  
+  sort_deck();
   for (int card_1 = 0; card_1 < deck.length; card_1++) {
     for (int card_2 = card_1 + 1; card_2 < deck.length; card_2++) {
-      range->pockets[pocket_num] = new_pocket(deck.cards[card_1], deck.cards[card_2]);
-      pocket_num++;
+      this_pocket = new_pocket(deck.cards[card_1], deck.cards[card_2]);
+      if (absolute_strength(this_pocket) >= min_strength) {
+        range->pockets[pocket_num] = this_pocket;
+        pocket_num++;
+      }
     }
   }
   create_simple_range(range);
-  return range;
+}
+
+void relative_range(Range *range, float min_strength) {
+  Pocket this_pocket;
+  int pocket_num = 0;
+  
+  sort_deck();
+  for (int card_1 = 0; card_1 < deck.length; card_1++) {
+    for (int card_2 = card_1 + 1; card_2 < deck.length; card_2++) {
+      this_pocket = new_pocket(deck.cards[card_1], deck.cards[card_2]);
+      if (relative_strength(this_pocket, 9) >= min_strength) {
+        range->pockets[pocket_num] = this_pocket;
+        pocket_num++;
+      }
+    }
+  }
+  create_simple_range(range);
 }
 
 void create_simple_range(Range *range) {
@@ -94,6 +117,16 @@ short range_chart_pos(Pocket pocket) {
   return pos;
 }
 
+float absolute_strength(Pocket pocket) {
+  short pos = range_chart_pos(pocket);
+  return POCKET_RANKS[pos/13][pos%13];
+}
+
+float relative_strength(Pocket pocket, short players) {
+  short pos = range_chart_pos(pocket);
+  return (POCKET_RANKS[pos/13][pos%13] * 9) / players - (100 / (float)players);
+}
+
 /* sort range function */
 
 
@@ -109,11 +142,16 @@ void print_range(Range *range) {
 }
 
 void print_simple_range(Range *range) {
-  for (int i = 0; i < 169; i++) {
-    printf("%d ", ((range->simple_range[i/13] & (1 << (i%13) )) != 0));
-    if (((i + 1) % 13) == 0)
-      printf("\n");
+  printf("  ");
+  for (int i = 0; i < 13; i++) {
+    printf("%-2c", CARD_VALUES[i]);
   }
+  for (int j = 0; j < 169; j++) {
+    if ((j % 13) == 0)
+      printf("\n%-2c", CARD_VALUES[j/13]);
+    printf("%d ", ((range->simple_range[j/13] & (1 << (j%13) )) != 0));
+  }
+  printf("\n");
 }
 
 void print_pocket_ranks() {

@@ -25,9 +25,13 @@ int choose(short a, short b);
 int factorial(int n);
 
 /* Range Functions */
-Range *create_max_range();
+Range *create_range();
+void absolute_range(Range *range, float min_strength);
+void relative_range(Range *range, float min_strength);
 void create_simple_range(Range *range);
 short range_chart_pos(Pocket pocket);
+float absolute_strength(Pocket pocket);
+float relative_strength(Pocket pocket, short players);
 
 /* Print Functions */
 void print_range(Range *range);
