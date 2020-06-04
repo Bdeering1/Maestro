@@ -11,17 +11,22 @@
 /* Outs Functions */
 
 Poker_Hand create_poker_hand(Pocket pocket, Board board) {
+  short pool_size = 2 + board.state;
+  Card *pool = malloc(sizeof(Card) * 7); /* default 7, regardless of size */
+  memcpy (pool, pocket.cards, 2 * sizeof(Card));
+  memcpy (pool + 2, board.cards, board.state * sizeof(Card));
+  
   Poker_Hand hand, possible_hand;
-  hand = hand_with_value(pocket, board, board.state);
+  hand = pool_value(pool, pool_size);
+  pool_size++;
   hand.num_outs = 0;
   
   sort_deck();
   for (int card = 0; card < deck.length; card++) {
     peek_next(deck.cards[card], &board);
-    if (board.state == 3) {
-      possible_hand = hand_with_value(pocket, board, 4);
-    } else if (board.state == 4) {
-      possible_hand = hand_with_value(pocket, board, 5);
+    pool[2 + board.state] = board.cards[board.state];
+    if (board.state != 5) {
+      possible_hand = pool_value(pool, pool_size);
     } else {
       printf("Board is full!");
       hand.num_outs = -1;
@@ -32,6 +37,7 @@ Poker_Hand create_poker_hand(Pocket pocket, Board board) {
       hand.num_outs++;
     }
   }
+  
   return hand;
 }
 
@@ -44,16 +50,11 @@ bool is_out(Pocket pocket, Board board, Poker_Hand hand, Poker_Hand possible_han
 
 /* Hand Value Functions */
 
-Poker_Hand hand_with_value(Pocket pocket, Board board, short state) {
+Poker_Hand pool_value(Card *pool, short pool_size) {
   Poker_Hand hand;
   hand.tie_breakers[0] = 0;
   hand.tie_breakers[1] = 0;
   hand.tie_breakers[2] = 0;
-  
-  short pool_size = 2 + state;
-  Card *pool = malloc(sizeof(Card) * pool_size);
-  memcpy (pool, pocket.cards, 2 * sizeof(Card));
-  memcpy (pool + 2, board.cards, state * sizeof(Card));
   
   Card straight[5];
   
@@ -212,13 +213,20 @@ bool is_straight(Card *pool, short pool_size, Card straight[5], short tie_breake
   short straight_start = -1;
   for (int card = 0; card < pool_size; card++) {
     if (sort_array[card].value + 1 == sort_array[card + 1].value) {
+      /* consecutive cards */
       straight_count++;
-      if (straight_count == 4 && sort_array[pool_size - 1].value == 14 && card == 2) { /* ace lowest card in straight */
+      if (straight_count == 4 && sort_array[pool_size - 1].value == 14 && sort_array[card].value == 4) { /* ace lowest card in straight */
         tie_breakers[0] = 1;
+        straight_start = 0;
       } else if (straight_count >= 5) {
         straight_start = card - 3;
       }
+    } else if (sort_array[card].value == sort_array[card + 1].value) {
+      /* matching cards (so that straight_count doesn't reset) */
+      /* if this is part of a straight, check to make sure that flush version of straight is used */
+      continue;
     } else if (card > 2) {
+      /* no straight found */
       break;
     } else {
       straight_count = 1;
@@ -226,8 +234,13 @@ bool is_straight(Card *pool, short pool_size, Card straight[5], short tie_breake
   }
   
   if (straight_start != -1) {
-    tie_breakers[0] = sort_array[straight_start].value;
-    memcpy(straight, sort_array + straight_start, 5 * sizeof(Card));
+    if (tie_breakers[0] == 1) {
+      memcpy(straight + 1, sort_array + straight_start, 4 * sizeof(Card));
+      straight[0] = sort_array[pool_size - 1];
+    } else {
+      tie_breakers[0] = sort_array[straight_start].value;
+      memcpy(straight, sort_array + straight_start, 5 * sizeof(Card));
+    }
     return true;
   }
 

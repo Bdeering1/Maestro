@@ -47,8 +47,11 @@ Card draw_card(Card card) {
       break;
     }
   }
-  if (i == deck.length)
-    printf("\nError: Trying to draw a duplicate card!\n");
+  if (i == deck.length) {
+    printf("\nError: Trying to draw a duplicate card - (");
+    print_card(card);
+    printf(")\n");
+  }
   deck.length--;
   return card;
 }
@@ -59,6 +62,11 @@ void replace_card() {
   } else {
     printf("\nError: Trying to add card to full deck!");
   }
+}
+
+void replace_cards(short num_cards) {
+  for (int card = 0; card < num_cards; card++)
+    replace_card();
 }
 
 Card high_card(Card card_a, Card card_b) {
@@ -103,10 +111,10 @@ void burn_and_turn(Card card, Board *board) {
 }
 
 void peek_next(Card card, Board *board) {
-  if (board->state == 4) {
-    board->cards[4] = card;
-  } else {
+  if (board->state == 3) {
     board->cards[3] = card;
+  } else {
+    board->cards[4] = card;
   }
 }
 

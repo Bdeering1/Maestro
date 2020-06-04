@@ -40,7 +40,7 @@ Poker_Hand create_poker_hand(Pocket pocket, Board board);
 bool is_out(Pocket pocket, Board board, Poker_Hand current_hand, Poker_Hand hand);
 
 /* Hand Value Functions */
-Poker_Hand hand_with_value(Pocket pocket, Board board, short state);
+Poker_Hand pool_value(Card *pool, short pool_size);
 bool is_pair(Card *pool, short pool_size, short tie_breakers[3]);
 bool is_two_pair(Card *pool, short pool_size, short tie_breakers[3]);
 bool is_triple(Card *pool, short pool_size, short tie_breakers[3]);

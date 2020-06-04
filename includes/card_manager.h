@@ -45,6 +45,7 @@ void create_deck();
 void sort_deck();
 Card draw_card(Card card);
 void replace_card();
+void replace_cards(short num_cards);
 Card high_card(Card card_a, Card card_b);
 Card low_card(Card card_a, Card card_b);
 bool cards_are_equal(Card card_1, Card card_2);

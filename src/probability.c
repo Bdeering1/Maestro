@@ -26,23 +26,34 @@ const float POCKET_RANKS[13][13] = {
 const char CARD_VALUES[13] = {'A','K','Q','J','T','9','8','7','6','5','4','3','2'};
 
 
-/* Utility Functions */
+/* Equity Functions */
 
-int choose(short a, short b) {
-  int c = a;
-  for (int i = 1; i < b; i++) {
-    a--;
-    c *= a;
+float hand_equity(Poker_Hand hand, Board board) {
+  /* do we have the best hand already? */
+  /* find a way to subtract their outs from 100?? */
+  if (board.state == 3) {
+    /* Flop */
+    return (hand.num_outs / (float)47 + hand.num_outs / (float)46) * 100;
+  } else if (board.state == 4) {
+    /* Turn */
+    return (hand.num_outs / (float)47) * 100;
+  } else {
+    /* River */
+    /* check hand rank and tie_breakers and compare to opponents range */
+    return 0;
   }
-  
-  return c / factorial(b);
 }
 
-int factorial(int n)
-{
-  if (n == 0)
-    return 1;
-  return n * factorial(n - 1);
+short best_hand_rank(Board board) {
+  /* check for three flush */
+  /* check for possible straight */
+  /* if neither: */
+  short board_rank = pool_value(board.cards, board.state).rank;
+  if (board_rank == 0) {
+    return 3;
+  } else { /* (board_rank >= 1 */
+    return 7;
+  }
 }
 
 
@@ -76,7 +87,7 @@ void absolute_range(Range *range, float min_strength) {
   create_simple_range(range);
 }
 
-void relative_range(Range *range, float min_strength) {
+void relative_range(Range *range, float min_strength, short players) {
   Pocket this_pocket;
   int pocket_num = 0;
   
@@ -84,7 +95,7 @@ void relative_range(Range *range, float min_strength) {
   for (int card_1 = 0; card_1 < deck.length; card_1++) {
     for (int card_2 = card_1 + 1; card_2 < deck.length; card_2++) {
       this_pocket = new_pocket(deck.cards[card_1], deck.cards[card_2]);
-      if (relative_strength(this_pocket, 9) >= min_strength) {
+      if (relative_strength(this_pocket, players) >= min_strength) {
         range->pockets[pocket_num] = this_pocket;
         pocket_num++;
       }
@@ -165,4 +176,24 @@ void print_pocket_ranks() {
     }
     printf("\n\n");
   }
+}
+
+
+/* Utility Functions */
+
+int choose(short a, short b) {
+  int c = a;
+  for (int i = 1; i < b; i++) {
+    a--;
+    c *= a;
+  }
+  
+  return c / factorial(b);
+}
+
+int factorial(int n)
+{
+  if (n == 0)
+    return 1;
+  return n * factorial(n - 1);
 }

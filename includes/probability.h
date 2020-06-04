@@ -20,14 +20,14 @@ struct range {
 };
 typedef struct range Range;
 
-/* Utility Functions */
-int choose(short a, short b);
-int factorial(int n);
+/* Equity Functions */
+float hand_equity(Poker_Hand hand, Board board);
+short best_hand_rank(Board board);
 
 /* Range Functions */
 Range *create_range();
 void absolute_range(Range *range, float min_strength);
-void relative_range(Range *range, float min_strength);
+void relative_range(Range *range, float min_strength, short players);
 void create_simple_range(Range *range);
 short range_chart_pos(Pocket pocket);
 float absolute_strength(Pocket pocket);
@@ -37,5 +37,9 @@ float relative_strength(Pocket pocket, short players);
 void print_range(Range *range);
 void print_simple_range(Range *range);
 void print_pocket_ranks();
+
+/* Utility Functions */
+int choose(short a, short b);
+int factorial(int n);
 
 #endif
