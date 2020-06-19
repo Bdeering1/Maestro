@@ -23,13 +23,17 @@ typedef struct range Range;
 /* Equity Functions */
 float hand_equity(Poker_Hand hand, Board board);
 short best_hand_rank(Board board);
+float pot_odds(short bet, short pot);
+float expected_value(short bet, short pot, float equity);
 
 /* Range Functions */
 Range *create_range();
-void absolute_range(Range *range, float min_strength);
-void relative_range(Range *range, float min_strength, short players);
+Range *absolute_range(float min_strength);
+Range *relative_range(float min_strength, short players);
 void create_simple_range(Range *range);
 short range_chart_pos(Pocket pocket);
+short num_combos(Range *range);
+float percent_hands(Range *range);
 float absolute_strength(Pocket pocket);
 float relative_strength(Pocket pocket, short players);
 

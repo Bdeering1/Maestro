@@ -14,6 +14,7 @@ void help() {
   printf("Enter the letter for the function you want to use, then any additional input if required.\n\n");
   printf("O = Calculate outs           ->  o [my card 1] [my card 2] [flop 1] [flop 2] [flop 3]\n");
   printf("E = Evalutate hand strength  ->  e [card 1] [card 2] [num players] <- optional, def=9\n");
+  printf("V = Expected value           ->  v [bet size] [pot size] [hand equity]\n");
   printf("R = Opening range            ->  r [min hand strength] [num players]\n");
   printf("A = Winning percentage of ALL starting hands (9 players)\n");
   printf("H = Get help menu (this)\n");
@@ -61,11 +62,14 @@ int main (int argc, char *argv[]) {
         printf("\n\n");
       }
       replace_cards(2);
+    } else if (token[0] == 'v') {
+      printf("\nEV = %.2f\n\n", expected_value(atoi(strtok(NULL, " ")), atoi(strtok(NULL, " ")), atoi(strtok(NULL, " "))));
     } else if (token[0] == 'r') {
-      Range *my_range = create_range();
       printf("\n");
-      relative_range(my_range, atoi(strtok(NULL, " ")), atoi(strtok(NULL, " ")));
+      Range *my_range = relative_range(atoi(strtok(NULL, " ")), atoi(strtok(NULL, " ")));
       print_simple_range(my_range);
+      printf("\nHand combos: %d", num_combos(my_range));
+      printf(" - %.1f%% of hands", percent_hands(my_range));
       printf("\n\n");
     } else if (token[0] == 'a') {
       print_pocket_ranks();

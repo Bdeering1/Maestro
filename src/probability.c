@@ -56,6 +56,14 @@ short best_hand_rank(Board board) {
   }
 }
 
+float pot_odds(short bet, short pot) {
+  return (float)bet / (pot + bet);
+}
+
+float expected_value(short bet, short pot, float equity) {
+  return (pot * equity / 100) - (bet * (1 - (equity / 100)));
+}
+
 
 /* Range Functions */
 
@@ -70,7 +78,8 @@ Range *create_range() {
   return range;
 }
 
-void absolute_range(Range *range, float min_strength) {
+Range *absolute_range(float min_strength) {
+  Range *range = create_range();
   Pocket this_pocket;
   int pocket_num = 0;
   
@@ -85,9 +94,11 @@ void absolute_range(Range *range, float min_strength) {
     }
   }
   create_simple_range(range);
+  return range;
 }
 
-void relative_range(Range *range, float min_strength, short players) {
+Range *relative_range(float min_strength, short players) {
+  Range *range = create_range();
   Pocket this_pocket;
   int pocket_num = 0;
   
@@ -102,6 +113,7 @@ void relative_range(Range *range, float min_strength, short players) {
     }
   }
   create_simple_range(range);
+  return range;
 }
 
 void create_simple_range(Range *range) {
@@ -126,6 +138,32 @@ short range_chart_pos(Pocket pocket) {
     pos = 13 * (14 - small_card.value) + (14 - big_card.value);
   }
   return pos;
+}
+
+short num_combos(Range *range) {
+  short row, col;
+  short counter = 0;
+  for (int i = 0; i < 169; i++) {
+    row = i / 13;
+    col = i % 13;
+    if ((range->simple_range[row] & (1 << (col) )) == 0) {
+      continue;
+    } else {
+      if (row > col) { /* Unsuited hand */
+        counter += 16;
+      } else if (row < col) { /* Suited hand */
+        if ((range->simple_range[col] & (1 << (row) )) == 0)
+          counter += 4;
+      } else { /* Pocket pair */
+        counter += 6;
+      }
+    }
+  }
+  return counter;
+}
+
+float percent_hands(Range *range) {
+  return num_combos(range) / 13.26;
 }
 
 float absolute_strength(Pocket pocket) {
